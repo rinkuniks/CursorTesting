@@ -7,6 +7,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.delay
+import com.nikhil.cursortesting.data.User
+import com.nikhil.cursortesting.data.UserDao
 
 data class SignUpState(
     val isLoading: Boolean = false,
@@ -14,18 +16,20 @@ data class SignUpState(
     val isSuccess: Boolean = false
 )
 
-class SignUpViewModel : ViewModel() {
+class SignUpViewModel(private val userDao: UserDao) : ViewModel() {
     private val _state = MutableStateFlow(SignUpState())
     val state: StateFlow<SignUpState> = _state.asStateFlow()
 
     fun signUp(name: String, email: String, password: String) {
-        // TODO: Implement actual sign-up logic here
-        // For now, we'll just simulate a successful sign-up
         _state.value = SignUpState(isLoading = true)
-        
         viewModelScope.launch {
-            delay(1000)
-            _state.value = SignUpState(isSuccess = true)
+            val existingUser = userDao.getUserByEmail(email)
+            if (existingUser != null) {
+                _state.value = SignUpState(error = "Email already registered")
+            } else {
+                userDao.insertUser(User(name = name, email = email, password = password))
+                _state.value = SignUpState(isSuccess = true)
+            }
         }
     }
 

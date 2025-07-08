@@ -4,6 +4,40 @@ import android.content.Context
 import android.util.DisplayMetrics
 import android.view.WindowManager
 import kotlin.math.sqrt
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.preferencesDataStore
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+
+val Context.dataStore by preferencesDataStore(name = "user_prefs")
+
+object LoginPrefs {
+    private val IS_LOGGED_IN = booleanPreferencesKey("is_logged_in")
+    private val USER_EMAIL = stringPreferencesKey("user_email")
+
+    suspend fun setLogin(context: Context, email: String) {
+        context.dataStore.edit { prefs ->
+            prefs[IS_LOGGED_IN] = true
+            prefs[USER_EMAIL] = email
+        }
+    }
+
+    suspend fun clearLogin(context: Context) {
+        context.dataStore.edit { prefs ->
+            prefs[IS_LOGGED_IN] = false
+            prefs.remove(USER_EMAIL)
+        }
+    }
+
+    fun isLoggedInFlow(context: Context): Flow<Boolean> =
+        context.dataStore.data.map { it[IS_LOGGED_IN] ?: false }
+
+    fun getUserEmailFlow(context: Context): Flow<String?> =
+        context.dataStore.data.map { it[USER_EMAIL] }
+}
 
 /**
  * Utility class for calculating responsive text sizes based on device dimensions and density

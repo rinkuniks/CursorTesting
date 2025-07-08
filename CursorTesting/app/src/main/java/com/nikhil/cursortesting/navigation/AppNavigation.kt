@@ -11,6 +11,19 @@ import com.nikhil.cursortesting.ui.screens.TextSizeDemoScreen
 import com.nikhil.cursortesting.ui.viewmodels.LoginViewModel
 import com.nikhil.cursortesting.ui.viewmodels.SignUpViewModel
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.nikhil.cursortesting.data.AppDatabase
+import androidx.compose.runtime.collectAsState
+import com.nikhil.cursortesting.utils.LoginPrefs
+import androidx.compose.runtime.getValue
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 
 sealed class Screen(val route: String) {
     object SignUp : Screen("signup")
@@ -22,12 +35,32 @@ sealed class Screen(val route: String) {
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
-    val signUpViewModel: SignUpViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
-    val loginViewModel: LoginViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+    val context = LocalContext.current
+    val db = AppDatabase.getDatabase(context)
+    val userDao = db.userDao()
+    val signUpViewModel = viewModel<SignUpViewModel>(factory = object : androidx.lifecycle.ViewModelProvider.Factory {
+        override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
+            return SignUpViewModel(userDao) as T
+        }
+    })
+    val loginViewModel = viewModel<LoginViewModel>(factory = object : androidx.lifecycle.ViewModelProvider.Factory {
+        override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
+            return LoginViewModel(userDao) as T
+        }
+    })
+
+    val isLoggedIn by LoginPrefs.isLoggedInFlow(context).collectAsState(initial = null)
+    if (isLoggedIn == null) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
+        }
+        return
+    }
+    val startDestination = if (isLoggedIn == true) Screen.Home.route else Screen.Login.route
 
     NavHost(
         navController = navController,
-        startDestination = "signup"
+        startDestination = startDestination
     ) {
         composable("home") {
             HomeScreen(
@@ -43,7 +76,9 @@ fun AppNavigation() {
                 },
                 onNavigateToLogin = {
                     navController.navigate(Screen.Login.route)
-                }
+                },
+                state = signUpViewModel.state.collectAsState().value,
+                onSnackbarShown = { signUpViewModel.resetState() }
             )
         }
         
@@ -54,10 +89,13 @@ fun AppNavigation() {
                 onEmailChange = loginViewModel::onEmailChange,
                 onPasswordChange = loginViewModel::onPasswordChange,
                 onLoginClick = {
-                    loginViewModel.login()
+                    loginViewModel.login(context)
                 },
                 isLoading = loginViewModel.isLoading,
-                errorMessage = loginViewModel.errorMessage
+                errorMessage = loginViewModel.errorMessage,
+                onNavigateToSignUp = {
+                    navController.navigate(Screen.SignUp.route)
+                }
             )
             LaunchedEffect(loginViewModel.loginSuccess) {
                 if (loginViewModel.loginSuccess) {

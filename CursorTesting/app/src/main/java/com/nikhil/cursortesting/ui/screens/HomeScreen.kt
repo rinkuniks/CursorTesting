@@ -22,6 +22,12 @@ import androidx.compose.ui.text.input.ImeAction
 import java.text.NumberFormat
 import java.util.*
 import java.util.Collections.emptyList
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.nikhil.cursortesting.data.AppDatabase
+import com.nikhil.cursortesting.utils.LoginPrefs
+import androidx.compose.runtime.collectAsState
+import kotlinx.coroutines.launch
 
 // Placeholder data models
 
@@ -33,6 +39,22 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     onNavigateToTextSizeDemo: (() -> Unit)? = null
 ) {
+    val context = LocalContext.current
+    val db = AppDatabase.getDatabase(context)
+    val userDao = db.userDao()
+    val email by LoginPrefs.getUserEmailFlow(context).collectAsState(initial = null)
+    var userName by remember { mutableStateOf("") }
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(email) {
+        if (email != null) {
+            scope.launch {
+                val user = userDao.getUserByEmail(email!!)
+                userName = user?.name ?: ""
+            }
+        }
+    }
+
     var items by remember { mutableStateOf(emptyList<Item>()) }
     var newItemName by remember { mutableStateOf("") }
     var newItemPrice by remember { mutableStateOf("") }
@@ -55,7 +77,7 @@ fun HomeScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "My App",
+                text = if (userName.isNotBlank()) "Hello, $userName!" else "My App",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold
             )

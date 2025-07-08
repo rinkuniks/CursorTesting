@@ -16,7 +16,8 @@ fun LoginScreen(
     onPasswordChange: (String) -> Unit,
     onLoginClick: () -> Unit,
     isLoading: Boolean = false,
-    errorMessage: String? = null
+    errorMessage: String? = null,
+    onNavigateToSignUp: () -> Unit
 ) {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Column(
@@ -56,6 +57,13 @@ fun LoginScreen(
                 } else {
                     Text("Login")
                 }
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            TextButton(
+                onClick = onNavigateToSignUp,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Sign Up")
             }
         }
     }

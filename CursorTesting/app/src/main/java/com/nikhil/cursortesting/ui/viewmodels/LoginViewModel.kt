@@ -1,5 +1,6 @@
 package com.nikhil.cursortesting.ui.viewmodels
 
+import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -8,8 +9,10 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.regex.Pattern
+import com.nikhil.cursortesting.data.UserDao
+import com.nikhil.cursortesting.utils.LoginPrefs
 
-class LoginViewModel : ViewModel() {
+class LoginViewModel(private val userDao: UserDao) : ViewModel() {
     var email by mutableStateOf("")
     var password by mutableStateOf("")
     var isLoading by mutableStateOf(false)
@@ -24,12 +27,11 @@ class LoginViewModel : ViewModel() {
         password = newPassword
     }
 
-    fun login() {
+    fun login(context: Context) {
         isLoading = true
         errorMessage = null
         loginSuccess = false
         viewModelScope.launch {
-            delay(1500) // Simulate network
             val emailPattern = Pattern.compile(
                 "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$"
             )
@@ -37,8 +39,15 @@ class LoginViewModel : ViewModel() {
                 errorMessage = "Invalid email format"
                 loginSuccess = false
             } else {
-                errorMessage = null // Success: valid email, any password
-                loginSuccess = true
+                val user = userDao.getUserByEmailAndPassword(email, password)
+                if (user != null) {
+                    errorMessage = null
+                    loginSuccess = true
+                    LoginPrefs.setLogin(context, email)
+                } else {
+                    errorMessage = "Invalid credentials"
+                    loginSuccess = false
+                }
             }
             isLoading = false
         }
