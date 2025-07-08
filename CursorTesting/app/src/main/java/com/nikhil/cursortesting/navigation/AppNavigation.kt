@@ -1,35 +1,22 @@
 package com.nikhil.cursortesting.navigation
 
-import androidx.compose.runtime.Composable
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import com.nikhil.cursortesting.ui.screens.HomeScreen
-import com.nikhil.cursortesting.ui.screens.LoginScreen
-import com.nikhil.cursortesting.ui.screens.SignUpScreen
-import com.nikhil.cursortesting.ui.screens.TextSizeDemoScreen
-import com.nikhil.cursortesting.ui.viewmodels.LoginViewModel
-import com.nikhil.cursortesting.ui.viewmodels.SignUpViewModel
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.nikhil.cursortesting.data.AppDatabase
-import androidx.compose.runtime.collectAsState
-import com.nikhil.cursortesting.utils.LoginPrefs
-import androidx.compose.runtime.getValue
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.*
+import androidx.compose.ui.platform.*
+import androidx.lifecycle.viewmodel.compose.*
+import androidx.navigation.compose.*
+import com.nikhil.cursortesting.data.*
+import com.nikhil.cursortesting.ui.screens.*
+import com.nikhil.cursortesting.ui.viewmodels.*
+import com.nikhil.cursortesting.utils.*
 
 sealed class Screen(val route: String) {
     object SignUp : Screen("signup")
     object Login : Screen("login")
     object Home : Screen("home")
-    object TextSizeDemo : Screen("textsize_demo")
+    object TextSizeDemo : Screen("text-size_demo")
 }
 
 @Composable
