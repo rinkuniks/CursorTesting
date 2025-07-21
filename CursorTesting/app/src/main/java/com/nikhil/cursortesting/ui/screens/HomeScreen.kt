@@ -6,7 +6,6 @@ import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.*
 import androidx.compose.material3.*
-import androidx.compose.material3.windowsizeclass.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.draw.*
@@ -23,7 +22,6 @@ import java.text.NumberFormat
 import java.util.*
 import java.util.Collections.emptyList
 import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.nikhil.cursortesting.data.AppDatabase
 import com.nikhil.cursortesting.utils.LoginPrefs
 import androidx.compose.runtime.collectAsState

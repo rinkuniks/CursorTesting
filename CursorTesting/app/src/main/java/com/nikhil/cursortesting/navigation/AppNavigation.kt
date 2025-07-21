@@ -15,6 +15,7 @@ import com.nikhil.cursortesting.utils.*
 sealed class Screen(val route: String) {
     object SignUp : Screen("signup")
     object Login : Screen("login")
+    object LoginResponsive : Screen("loginResponsive")
     object Home : Screen("home")
     object TextSizeDemo : Screen("text-size_demo")
 }
@@ -43,19 +44,20 @@ fun AppNavigation() {
         }
         return
     }
-    val startDestination = if (isLoggedIn == true) Screen.Home.route else Screen.Login.route
+    val startDestination = if (isLoggedIn == true) Screen.Home.route else Screen.LoginResponsive.route
 
     NavHost(
         navController = navController,
         startDestination = startDestination
     ) {
-        composable("home") {
+        composable(Screen.Home.route) {
             HomeScreen(
                 onNavigateToTextSizeDemo = {
                     navController.navigate(Screen.TextSizeDemo.route)
                 }
             )
         }
+
         composable(Screen.SignUp.route) {
             SignUpScreen(
                 onSignUpClick = { name, email, password ->
@@ -93,7 +95,11 @@ fun AppNavigation() {
                 }
             }
         }
-        
+
+        composable(Screen.LoginResponsive.route) {
+            LoginScreenResponsive()
+        }
+
         composable(Screen.TextSizeDemo.route) {
             TextSizeDemoScreen()
         }
