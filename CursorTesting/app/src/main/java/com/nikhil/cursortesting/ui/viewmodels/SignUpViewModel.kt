@@ -1,14 +1,9 @@
 package com.nikhil.cursortesting.ui.viewmodels
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.delay
-import com.nikhil.cursortesting.data.User
-import com.nikhil.cursortesting.data.UserDao
+import androidx.lifecycle.*
+import com.nikhil.cursortesting.data.*
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
 
 data class SignUpState(
     val isLoading: Boolean = false,

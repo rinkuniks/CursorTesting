@@ -104,4 +104,4 @@ fun AppNavigation() {
             TextSizeDemoScreen()
         }
     }
-} 
+}

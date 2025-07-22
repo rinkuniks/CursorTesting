@@ -1,8 +1,6 @@
 package com.nikhil.cursortesting.utils
 
-import androidx.window.core.layout.WindowHeightSizeClass
-import androidx.window.core.layout.WindowSizeClass
-import androidx.window.core.layout.WindowWidthSizeClass
+import androidx.window.core.layout.*
 
 enum class DeviceConfiguration {
     MOBILE_PORTRAIT,
@@ -18,16 +16,16 @@ enum class DeviceConfiguration {
 
             return when {
                 widthClass == WindowWidthSizeClass.COMPACT &&
-                        heightClass == WindowHeightSizeClass.MEDIUM -> DeviceConfiguration.MOBILE_PORTRAIT
+                        heightClass == WindowHeightSizeClass.MEDIUM -> MOBILE_PORTRAIT
                 widthClass == WindowWidthSizeClass.COMPACT &&
-                        heightClass == WindowHeightSizeClass.EXPANDED -> DeviceConfiguration.MOBILE_PORTRAIT
+                        heightClass == WindowHeightSizeClass.EXPANDED -> MOBILE_PORTRAIT
                 widthClass == WindowWidthSizeClass.EXPANDED &&
-                        heightClass == WindowHeightSizeClass.COMPACT -> DeviceConfiguration.MOBILE_LANDSCAPE
+                        heightClass == WindowHeightSizeClass.COMPACT -> MOBILE_LANDSCAPE
                 widthClass == WindowWidthSizeClass.MEDIUM &&
-                        heightClass == WindowHeightSizeClass.EXPANDED -> DeviceConfiguration.TABLET_PORTRAIT
+                        heightClass == WindowHeightSizeClass.EXPANDED -> TABLET_PORTRAIT
                 widthClass == WindowWidthSizeClass.EXPANDED &&
-                        heightClass == WindowHeightSizeClass.MEDIUM -> DeviceConfiguration.TABLET_LANDSCAPE
-                else -> DeviceConfiguration.DESKTOP
+                        heightClass == WindowHeightSizeClass.MEDIUM -> TABLET_LANDSCAPE
+                else -> DESKTOP
             }
         }
     }
