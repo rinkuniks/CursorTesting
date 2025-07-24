@@ -10,6 +10,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import com.nikhil.cursortesting.navigation.AppNavigation
 import com.nikhil.cursortesting.ui.theme.CursorTestingTheme
+import com.nikhil.cursortesting.utils.PermissionRequestScreen
 
 class MainActivity : ComponentActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,7 +23,8 @@ class MainActivity : ComponentActivity() {
 					modifier = Modifier.fillMaxSize(),
 					color = MaterialTheme.colorScheme.background
 				) {
-					AppNavigation()
+					PermissionRequestScreen(context = this)
+//					AppNavigation()
 				}
 			}
 		}
